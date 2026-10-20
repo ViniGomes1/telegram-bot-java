@@ -9,14 +9,11 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Etapa 2: Runtime com suporte a navegadores (Ubuntu Noble)
-# Use a mesma versão minor configurada no seu pom.xml (ex: 1.49.0, 1.48.0, etc.)
+# Já contém WebKit, Chromium e Firefox instalados
 FROM mcr.microsoft.com/playwright/java:v1.63.0-noble
 WORKDIR /app
 
-# Instala o WebKit explicitamente caso a imagem base venha apenas com Chromium
-RUN npx playwright install --with-deps webkit
-
-# Copia o JAR compilado
+# Copia o JAR compilado da primeira etapa
 COPY --from=build /app/target/app.jar app.jar
 
 ENV PORT=8080
