@@ -2,6 +2,7 @@ package com.vinigomes.bot.playwright;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
@@ -16,7 +17,8 @@ public class PlaywrightMercadoLivre {
 
 	public PlaywrightMercadoLivre(String link) {
 		try (Playwright playwright = Playwright.create()) {
-			Browser browser = playwright.webkit().launch();
+			Browser browser = playwright.webkit().launch(new BrowserType.LaunchOptions()
+			        .setHeadless(true));
 			BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
 			Page page = context.newPage();
 			page.navigate(link);
