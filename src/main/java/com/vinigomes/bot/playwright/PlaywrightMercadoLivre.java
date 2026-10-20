@@ -34,7 +34,7 @@ public class PlaywrightMercadoLivre {
 			this.desconto = locatorVariaveis(
 					locator.locator("div.poly-price__current > span.poly-price__disc_label").first());// desconto
 			this.opcoesExtra = locatorVariaveis(locator.locator("span.poly-price__installments").first());// opções extras
-
+			page.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
