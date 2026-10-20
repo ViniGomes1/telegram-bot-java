@@ -32,7 +32,8 @@ public class App {
 				CommandManager comands = new CommandManager();
 				// Faz o parse do JSON do Telegram usando o utilitário do Pengrad
 				Update update = BotUtils.parseUpdate(payload);
-
+				
+				//algo
 				if (update.message() != null && update.message().text() != null) {
 					//e necessario entrar aqui pois verifica se há algo, if obrigatório
 					
