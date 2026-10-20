@@ -11,15 +11,16 @@ import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.request.SetWebhook;
 import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.utility.BotUtils;
+import com.vinigomes.bot.response.ResponseManager;
 import com.vinigomes.bot.telegram.CommandManager;
 
 import io.javalin.Javalin;
 
 public class App {
 
-	private static final String BOT_TOKEN = System.getenv("BOT_TOKEN");
+	private static final String BOT_TOKEN = System.getenv().getOrDefault("BOT_TOKEN", "token");
 	// URL HTTPS pública (ex: gerada pelo ngrok ou seu servidor com SSL)
-	private static final String PUBLIC_URL = System.getenv("PUBLIC_URL");
+	private static final String PUBLIC_URL = System.getenv().getOrDefault("PUBLIC_URL", "URL");
 	
 	public static void main(String[] args) {
 		TelegramBot bot = new TelegramBot(BOT_TOKEN);
@@ -29,7 +30,8 @@ public class App {
 			// Define o endpoint POST no roteador do Javalin 7
 			config.routes.post("/webhook", ctx -> {
 				String payload = ctx.body();
-				CommandManager comands = new CommandManager();
+				//CommandManager comands = new CommandManager();
+				ResponseManager response = new ResponseManager();
 				// Faz o parse do JSON do Telegram usando o utilitário do Pengrad
 				Update update = BotUtils.parseUpdate(payload);
 				
@@ -40,9 +42,11 @@ public class App {
 					long chatId = update.message().chat().id();
 					String textoRecebido = update.message().text();
 					
-					Map<String, String> resultado = comands.processar(textoRecebido);
+					//Map<String, String> resultado = comands.processar(textoRecebido);
 					// Envia a resposta de volta ao usuário
-					bot.execute(new SendPhoto(chatId, resultado.get("foto")).caption(resultado.get("mensagem")).parseMode(ParseMode.HTML));//new SendMessage(chatId, resposta).parseMode(ParseMode.HTML)
+					//bot.execute(new SendMessage(chatId, textoRecebido));
+					bot.execute(response.processarImagem("imagem", chatId, textoRecebido));
+					//bot.execute(new SendPhoto(chatId, resultado.get("foto")).caption(resultado.get("mensagem")).parseMode(ParseMode.HTML));//new SendMessage(chatId, resposta).parseMode(ParseMode.HTML)
 				}
 
 				// Responde 200 OK para o Telegram saber que a mensagem foi entregue
@@ -53,7 +57,7 @@ public class App {
 		// 2. Registra a URL do webhook no Telegram automaticamente ao iniciar
 		BaseResponse response = bot.execute(new SetWebhook().url(PUBLIC_URL + "/webhook"));
 		if (response.isOk()) {
-			System.out.println("Webhook registrado com sucesso no Telegram!");
+			System.out.println("Webhook registrado com sucesso no Telegram!: " + PUBLIC_URL);
 		} else {
 			System.err.println("Falha ao registrar webhook: " + response.description());
 		}

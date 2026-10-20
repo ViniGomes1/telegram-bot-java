@@ -3,7 +3,7 @@ package com.vinigomes.bot.telegram.commands;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.vinigomes.bot.playwright.PlaywrightMercadoLivre;
+import com.vinigomes.bot.scraping.MercadoLivreScraping;
 import com.vinigomes.bot.telegram.CommandActions;
 
 public class MercadoCommand implements CommandActions{
@@ -12,7 +12,7 @@ public class MercadoCommand implements CommandActions{
 	public Map<String, String>  execute(String link) {
 		 Map<String, String> resultado = new HashMap<>();
 		 
-		PlaywrightMercadoLivre mlScrap = new PlaywrightMercadoLivre(link);
+		MercadoLivreScraping mlScrap = new MercadoLivreScraping(link);
 		String retorno = "<b>" + mlScrap.getTitulo() + "</b>" + "\n\n"
 				.concat(mlScrap.getPrecoAnterior() != null ? "DE: " + "<s> " + mlScrap.getPrecoAnterior() + "</s>" + "\n": "")
 				.concat(mlScrap.getPrecoAnterior() != null ? "POR: " + mlScrap.getPrecoAtual() + "": "APENAS: " + mlScrap.getPrecoAtual())
